@@ -1,24 +1,36 @@
 name: Deploy to GitHub Pages
 
 on:
+  # 當推送到 main 分支時觸發部署
   push:
-    branches: [main]
+    branches: [ main ]
+  
+  # 允許手動觸發
   workflow_dispatch:
 
+# 設定權限
 permissions:
   contents: read
   pages: write
   id-token: write
+
+# 併發控制
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v3
+        # 修正 1: 從 v3 更新為 v4
+        uses: actions/checkout@v4
+      
       - name: Install, build, and upload your site
-        uses: withastro/action@v0
-
+        # 修正 2: 從 v0 更新為 v2 (這非常重要，v2 才支援新的 artifact 系統)
+        uses: withastro/action@v2
+        
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -28,4 +40,5 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        # 修正 3: 從 v1/v2 更新為 v4
+        uses: actions/deploy-pages@v4
